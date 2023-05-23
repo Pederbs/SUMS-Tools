@@ -55,6 +55,9 @@ There was an attempt to collect Voltage data from the modem but this was scrappe
 Simple script for receiving data with the UnetScket API.
 ## tx.py
 Simple script for sending some data with the UnetScket API.
+## Useful link
+This repo goes more in detail on what functionalities exists within `phy`:
+https://github.com/org-arl/unet-contrib/blob/master/unetsocket/python/python-gateway-tutorial.ipynb
 
 
 
@@ -66,3 +69,5 @@ https://stackoverflow.com/questions/75626405/error-while-trying-to-run-2-node-ne
 
 UnetStack handbook: (good tutorials and documentation)
 https://unetstack.net/handbook/unet-handbook.html
+
+
