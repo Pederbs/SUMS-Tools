@@ -1,6 +1,13 @@
 # SUMS-Tools
 A collection of tools useful for running, maintaining, developing and other things related to the SUMS programme.
-
+# Atlas_calibration
+A collection of files useful when calibrating or verifying the validity of calibrated data
+## lib
+Module with both libraries relevant for the Atlas Scientific sensors.
+## C/DO_logger.py
+Both essentially work the same, they get the reading from the sensor and logs them to a file fastest sample time is T = 0.6 sec.
+## ALL_logger.py
+works like both C/DO loggers only here the fastes sample time is T = 1.2 sec.
 # Subnero_modem
 A collection of files with tools or functionality with the Subnero modem.
 
