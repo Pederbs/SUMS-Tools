@@ -13,7 +13,7 @@ Module with both libraries relevant for the Atlas Scientific sensors.
 ## C/DO_logger.py
 Both essentially work the same, they get the reading from the sensor and logs them to a file fastest sample time is T = 0.6 sec.
 ## ALL_logger.py
-works like both C/DO loggers only here the fastes sample time is T = 1.2 sec.
+works like both C/DO loggers but the fastes sample time here is T = 1.2 sec.
 ## notes_calibration.md
 A **VERY** informal notes file for when i tried to calibrate the Atlas sensors, I first tried in UART then I2C. I strongly recomend I2C.
 
