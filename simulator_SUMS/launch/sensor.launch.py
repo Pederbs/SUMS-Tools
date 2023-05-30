@@ -3,19 +3,26 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 import random
 
-sample_time = 30.0              # Sample time in seconds (float)
-n_sensors = 5                   # How many sensors that are in use
-transfer_delay = 10.0            # How long transferring data takes in seconds(float)
-modem_IP = '192.168.42.195'     # IP for the modem
-modem_port = 1100               # Port for the modem
-precision = 2
+sample_time = 10.0              # Sample time in seconds (float)
+n_sensors = 5                   # How many sensors that are in use (int)
+transfer_delay = 6.0            # How long transferring data takes in seconds(float)
+modem_IP = '192.168.42.86'      # IP for the modem (string)
+modem_port = 1100               # Port for the modem (int) [only change if using simulator]
+precision = 2                   # Variable for specifying the precision of the transmitted data (int)
+
+# Header for identifying logged data
+log_header = 'Time,Pressure,Voltage,Current,Oxygen,Salinity,Temperature'
 
 # Random generator to avoid deadlocks
-lower_bounds = [3, 5]   # Seconds
-upper_bounds = [5, 9]   # Seconds
-random_bounds = [       # Milli Seconds
-    random.randrange(lower_bounds[0]*1000, lower_bounds[1]*1000, 200),
-    random.randrange(upper_bounds[0]*1000, upper_bounds[1]*1000, 200)
+ms = 1000
+step = 200
+lower_bounds = [2 * ms, 4 * ms]
+upper_bounds = [4 * ms, 6 * ms]
+
+# Generating random bounds for each runtime based on the bounds above
+random_bounds = [
+    random.randrange(lower_bounds[0], upper_bounds[0], step),
+    random.randrange(lower_bounds[1], upper_bounds[1], step)
 ]
 
 
@@ -61,29 +68,15 @@ def generate_launch_description():
             namespace='logger',
             executable='internal_logger',
             name='internal',
-            parameters=[]
+            parameters=[{'log_header': log_header}]
         ),
         Node(
             package='logger',
             namespace='logger',
             executable='external_logger',
             name='external',
-            parameters=[]
+            parameters=[{'log_header': log_header}]
         ),
-        
-#        Node(
-#            package='modem_communication',
-#            namespace='modem',
-#            executable='modem_data_handler',
-#            name='subnero',
-#            parameters=[
-#                        {'sample_time': sample_time},
-#                        {'sensor_count': n_sensors},
-#                        {'transfer_delay': transfer_delay},
-#                        {'modem_IP': modem_IP}
-#            ]
-#        ),
-        
         Node(
             package='modem_communication',
             namespace='modem',
@@ -97,8 +90,8 @@ def generate_launch_description():
         Node(
             package='modem_communication',
             namespace='modem',
-            executable='modem_data_sender',
-            name='subnero',
+            executable='modem_data_communicator',
+            name='subnero_communicator',
             parameters=[
                         {'sample_time': sample_time},
                         {'transfer_delay': transfer_delay},

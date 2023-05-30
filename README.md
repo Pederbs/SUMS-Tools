@@ -62,7 +62,7 @@ https://github.com/org-arl/unet-contrib/blob/master/unetsocket/python/python-gat
 
 
 # unet-3.4.0
-Files for simulating modems if none are accessable, note that Java version 8? is needed to run this. Good tutorials can be found on UnetStack web page:
+Simulating modems if none are accessable, note that Java version 8? is needed to run this. Good tutorials can be found on UnetStack web page:
 
 Java 8?
 https://stackoverflow.com/questions/75626405/error-while-trying-to-run-2-node-network-groovy-example

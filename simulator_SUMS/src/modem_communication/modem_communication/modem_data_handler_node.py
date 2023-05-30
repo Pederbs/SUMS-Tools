@@ -8,27 +8,29 @@ class ModemDataHandler(Node):
     times_checked = 0
 
     barometer_data = {
-        'time': '00:00',
+        'time': '00:00:00',
         'depth': 0.0,
-        'pressure': 0.0
+        'pressure': 0.0,
+        'pressurePSI': 0.0
     }
     battery_data = {
-        'time': '00:00',
+        'time': '00:00:00',
         'voltage': 0.0,
         'current': 0.0,
         'percent': 0.0
     }
     oxygen_data = {
-        'time': '00:00',
+        'time': '00:00:00',
         'oxygen': 0.0
     }
     salinity_data = {
-        'time': '00:00',
+        'time': '00:00:00',
         'salinity': 0.0
     }
     temperature_data = {
-        'time': '00:00',
-        'temperature': 0.0
+        'time': '00:00:00',
+        'temperature': 0.0,
+        'temperatureF': 0.0
     }
     
     def __init__(self):
@@ -71,16 +73,19 @@ class ModemDataHandler(Node):
 
 
     def publish_data(self):
+        self.times_checked += 1
         if self.times_checked >= self.n_sensors:
             # Getting the local time
             current_time = time.localtime()
             local_time =  time.strftime("%H:%M:%S",current_time)
 
-            # Not tested on modem
+            # Generate string that will be sent to modem with
+            # predefined pressision
             data = (
                 f"{local_time},"
                 f"{self.barometer_data['pressure']:.{self.precision}f},"
                 f"{self.battery_data['voltage']:.{self.precision}f},"
+                f"{self.battery_data['current']:.{self.precision}f},"
                 f"{self.oxygen_data['oxygen']:.{self.precision}f},"
                 f"{self.salinity_data['salinity']:.{self.precision}f},"
                 f"{self.temperature_data['temperature']:.{self.precision}f}"
@@ -91,15 +96,16 @@ class ModemDataHandler(Node):
 
             self.get_logger().info('Data Published to Topic')
             self.internal_modem_publisher_.publish(modem_msg)
+            # Reset counter
             self.times_checked = 0
 
-
+    # Unpacking data
     def barometer_callback(self, msg:Barometer):
         self.barometer_data['pressure'] = msg.pressure_mbar
+        self.barometer_data['pressurePSI'] = msg.pressure_psi
         self.barometer_data['depth'] = msg.depth
         self.barometer_data['time'] = msg.local_time
 
-        self.times_checked += 1
         self.publish_data()
 
     def battery_callback (self, msg:Battery):
@@ -108,26 +114,23 @@ class ModemDataHandler(Node):
         self.battery_data['percent'] = msg.battery_percent
         self.battery_data['time'] = msg.local_time
 
-        self.times_checked += 1
         self.publish_data()
  
     def oxygen_callback(self, msg:Oxygen):
         self.oxygen_data['oxygen'] = msg._oxygen_concentration
         self.oxygen_data['time'] = msg.local_time
 
-        self.times_checked += 1
         self.publish_data()
  
     def salinity_callback(self, msg:Salinity):
         self.salinity_data['salinity'] = msg.salinity_value
         self.salinity_data['time'] = msg.local_time
 
-        self.times_checked += 1
         self.publish_data()
  
     def temperature_callback(self, msg:Thermometer):
         self.temperature_data['temperature'] = msg.temperature_celsius
+        self.temperature_data['temperatureF'] = msg.temperature_farenheit
         self.temperature_data['time'] = msg.local_time
 
-        self.times_checked += 1
         self.publish_data()
